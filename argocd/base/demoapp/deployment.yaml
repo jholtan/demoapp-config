@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: demoapp
+spec:
+  replica: 1
+  revisionHistoryLimit: 1
+  selector:
+    matchLabels:
+      app: demoapp
+    template:
+      metadata:
+        labels:
+          app: demoapp
+      spec:
+        containers:
+          - name: demoapp
+            image:
+              name: ghcr.io/jholtan/demoapp
+            ports:
+              - containerPort: 80

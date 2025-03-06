@@ -1,0 +1,14 @@
+apiVersion: projectcontour.io/v1
+kind: HTTPProxy
+metadata:
+  name: demo-app-prod
+  namespace: demo-app-prod
+spec:
+  virtualhost:
+    fqdn: "localhost"
+  routes:
+    - conditions:
+        - prefix: "/"
+      services:
+        - name: demo-app-prod
+          port: 80
