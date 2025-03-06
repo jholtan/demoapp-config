@@ -1,0 +1,32 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: dev-appset
+  namespace: argocd
+spec:
+  goTemplate: true
+  goTemplateOptions: ["missingKey=error"]
+  generators:
+    - git:
+        repoURL: https://github.com/jholtan/
+        revision: HEAD
+        directories:
+          - path: argocd/overlays/stage/*
+  template:
+    metadata:
+      name: "{{index .path.segments 3}}-{{ index .path.segments 2}}"
+    spec:
+      project: default
+      source:
+        repoURL: https://github.com/jholtan/demoapp-config.git
+        targetRevision: HEAD
+        path: "{{.path.path}}"
+      destination:
+        server: https://kubernetes.default.svc
+        namespace: "{{index .path.segments 3}}-{{ index .path.segments 2}}"
+      syncPolicy:
+        syncOptions:
+          - CreateNamespace=true
+        automated:
+          prune: true
+          selfHeal: true
